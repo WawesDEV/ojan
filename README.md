@@ -1,6 +1,6 @@
 # ![IMG_20250126_235819_193](https://github.com/user-attachments/assets/feece24f-b003-42be-a601-09eb57fcf47c)
 # OJAN 
-
+wawesdev.github.io/ojan/
 # What ?
 
 This innovative text encryptor is a fast tool for privacy and data protection. It is intended both for users who want to hide their messages from prying eyes, and for those who seek to protect their information from analysis by neural networks. 
