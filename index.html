@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJAN</title>
+    <title>OJAN v1.3</title>
     <style>
         body {
             background-color: #2e2b2b;
@@ -49,7 +49,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>OJAN</h1>
+        <h1>OJANix</h1>
         <textarea id="inputText" placeholder="Russian or OJAN..."></textarea>
         <textarea id="englishInputText" placeholder="En or OJAN..."></textarea>
         <button onclick="translateText()">RUN</button>
@@ -63,7 +63,7 @@
                 'Щ': '9', 'З': '0', 'Х': 'х', 'Ф': '@', 'Ы': '#', 'В': '₽', 'А': '_', 'П': '&',
                 'Р': '-', 'О': '+', 'Л': '(', 'Д': ')', 'Ж': '№', 'Э': '~', 'Я': '*', 'Ч': '"',
                 'С': '\'', 'М': ':', 'И': ';', 'Т': '!', 'Ь': 'ъ', 'Ъ': '\\', 'Б': '?', 'Ю': '?',
-                // двустороннее соответствие (обратный перевод)
+                // sys  RU
                 '1': 'Й', '2': 'Ц', '³': 'У', '⁴': 'К', '5': 'Е', '6': 'Н', '7': 'Г', '8': 'Ш',
                 '9': 'Щ', '0': 'З', 'х': 'Х', '@': 'Ф', '#': 'Ы', '₽': 'В', '_': 'А', '&': 'П',
                 '-': 'Р', '+': 'О', '(': 'Л', ')': 'Д', '№': 'Ж', '~': 'Э', '*': 'Я', '"': 'Ч',
@@ -75,7 +75,7 @@
                 'O': '9', 'P': '0', 'A': '@', 'S': '#', 'D': '$', 'F': '_', 'G': '&', 'H': '-',
                 'J': '+', 'K': '(', 'L': ')', 'Z': '*', 'X': '"', 'C': '\'', 'V': ':', 'B': ';',
                 'N': '!', 'M': '?',
-                // двустороннее соответствие (обратный перевод)
+                // sys  EN
                 '1': 'Q', '2': 'W', '3': 'E', '4': 'R', '5': 'T', '6': 'Y', '7': 'U', '8': 'I',
                 '9': 'O', '0': 'P', '@': 'A', '#': 'S', '$': 'D', '_': 'F', '&': 'G', '-': 'H',
                 '+': 'J', '(': 'K', ')': 'L', '*': 'Z', '"': 'X', '\'': 'C', ':': 'V', ';': 'B',
@@ -87,13 +87,13 @@
             let outputText = '';
             let englishOutputText = '';
 
-            // Перевод с русского на Ojan
+            // RU TO OJ
             for (let i = 0; i < inputText.length; i++) {
                 let char = inputText[i].toUpperCase();
                 outputText += mappingRuOjan[char] || char;
             }
 
-            // Перевод с английского на Ojan
+            // EN TO OJ
             for (let i = 0; i < englishInputText.length; i++) {
                 let char = englishInputText[i].toUpperCase();
                 englishOutputText += mappingEnOjan[char] || char;
