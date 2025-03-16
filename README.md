@@ -1,7 +1,10 @@
 # ![IMG_20250126_235819_193](https://github.com/user-attachments/assets/feece24f-b003-42be-a601-09eb57fcf47c)
 # OJAN 
-https://wawesdev.github.io/ojan/
-# What ?
+site -> https://wawesdev.github.io/ojan/ 
+
+# News
+It looks like Google started blocking our encryption, calling it a scam, lol
+# What is it ?
 
 This innovative text encryptor is a fast tool for privacy and data protection. It is intended both for users who want to hide their messages from prying eyes, and for those who seek to protect their information from analysis by neural networks. 
 
