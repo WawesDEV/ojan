@@ -1,4 +1,5 @@
 # Security Policy
+Does this encryption provide security? - Yes 
 
 ## Supported Versions
 
