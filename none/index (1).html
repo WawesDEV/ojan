@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJANix v2.0</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a, #333333);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 600px;
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            resize: none;
+            outline: none;
+        }
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #00b894;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover {
+            background-color: #009b7d;
+        }
+        button i {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OJANix  v2.0</h1>
+        <textarea id="inputText" placeholder="Text (RU or EN)..."></textarea>
+        <textarea id="outputText" placeholder="Ojanix. . ." readonly></textarea>
+        <div class="buttons">
+            <button onclick="translateText()"><i class="fas fa-play"></i> RUN</button>
+            <button onclick="downloadText()"><i class="fas fa-download"></i> Download</button>
+        </div>
+    </div>
+
+    <script>
+        function translateText() {
+            const mapping = {
+                'А': '1', 'Б': '2', 'В': '3', 'Г': '4', 'Д': '5', 'Е': '6', 'Ё': '7', 'Ж': '8', 'З': '9', 'И': '0',
+                'Й': '@', 'К': '#', 'Л': '$', 'М': '%', 'Н': '&', 'О': '*', 'П': '(', 'Р': ')', 'С': '-', 'Т': '+',
+                'У': '=', 'Ф': '{', 'Х': '}', 'Ц': '[', 'Ч': ']', 'Ш': '|', 'Щ': ':', 'Ы': ';', 'Э': '"', 'Ю': '\'',
+                'Я': '!', '1': 'А', '2': 'Б', '3': 'В', '4': 'Г', '5': 'Д', '6': 'Е', '7': 'Ё', '8': 'Ж', '9': 'З',
+                '0': 'И', '@': 'Й', '#': 'К', '$': 'Л', '%': 'М', '&': 'Н', '*': 'О', '(': 'П', ')': 'Р', '-': 'С',
+                '+': 'Т', '=': 'У', '{': 'Ф', '}': 'Х', '[': 'Ц', ']': 'Ч', '|': 'Ш', ':': 'Щ', ';': 'Ы', '"': 'Э',
+                '\'': 'Ю', '!': 'Я'
+            };
+
+            let inputText = document.getElementById('inputText').value.toUpperCase();
+            let outputText = '';
+
+            for (let char of inputText) {
+                outputText += mapping[char] || char;
+            }
+
+            document.getElementById('outputText').value = outputText;
+        }
+
+        function downloadText() {
+            let text = document.getElementById('outputText').value;
+            if (!text) {
+                alert("Сначала выполните перевод!");
+                return;
+            }
+            let blob = new Blob([text], { type: "text/plain" });
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "OJANix_Translation.txt";
+            link.click();
+        }
+    </script>
+</body>
+</html>

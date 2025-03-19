@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJAN v1.3</title>
+    <style>
+        body {
+            background-color: #2e2b2b;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #403d3d;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #0e1c1c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OJANix</h1>
+        <textarea id="inputText" placeholder="Russian or OJAN..."></textarea>
+        <textarea id="englishInputText" placeholder="En or OJAN..."></textarea>
+        <button onclick="translateText()">RUN</button>
+        <textarea id="outputText" placeholder="RU or Ojan..." readonly></textarea>
+        <textarea id="englishOutputText" placeholder="EN or Ojan..." readonly></textarea>
+    </div>
+    <script>
+        function translateText() {
+            const mappingRuOjan = {
+                'Й': '1', 'Ц': '2', 'У': '³', 'К': '⁴', 'Е': '5', 'Н': '6', 'Г': '7', 'Ш': '8',
+                'Щ': '9', 'З': '0', 'Х': 'х', 'Ф': '@', 'Ы': '#', 'В': '₽', 'А': '_', 'П': '&',
+                'Р': '-', 'О': '+', 'Л': '(', 'Д': ')', 'Ж': '№', 'Э': '~', 'Я': '*', 'Ч': '"',
+                'С': '\'', 'М': ':', 'И': ';', 'Т': '!', 'Ь': 'ъ', 'Ъ': '\\', 'Б': '?', 'Ю': '?',
+                // sys  RU
+                '1': 'Й', '2': 'Ц', '³': 'У', '⁴': 'К', '5': 'Е', '6': 'Н', '7': 'Г', '8': 'Ш',
+                '9': 'Щ', '0': 'З', 'х': 'Х', '@': 'Ф', '#': 'Ы', '₽': 'В', '_': 'А', '&': 'П',
+                '-': 'Р', '+': 'О', '(': 'Л', ')': 'Д', '№': 'Ж', '~': 'Э', '*': 'Я', '"': 'Ч',
+                '\'': 'С', ':': 'М', ';': 'И', '!': 'Т', 'ъ': 'Ь', '\\': 'Ъ', '?': 'Б', '?': 'Ю'
+            };
+
+            const mappingEnOjan = {
+                'Q': '1', 'W': '2', 'E': '3', 'R': '4', 'T': '5', 'Y': '6', 'U': '7', 'I': '8',
+                'O': '9', 'P': '0', 'A': '@', 'S': '#', 'D': '$', 'F': '_', 'G': '&', 'H': '-',
+                'J': '+', 'K': '(', 'L': ')', 'Z': '*', 'X': '"', 'C': '\'', 'V': ':', 'B': ';',
+                'N': '!', 'M': '?',
+                // sys  EN
+                '1': 'Q', '2': 'W', '3': 'E', '4': 'R', '5': 'T', '6': 'Y', '7': 'U', '8': 'I',
+                '9': 'O', '0': 'P', '@': 'A', '#': 'S', '$': 'D', '_': 'F', '&': 'G', '-': 'H',
+                '+': 'J', '(': 'K', ')': 'L', '*': 'Z', '"': 'X', '\'': 'C', ':': 'V', ';': 'B',
+                '!': 'N', '?': 'M'
+            };
+
+            let inputText = document.getElementById('inputText').value;
+            let englishInputText = document.getElementById('englishInputText').value;
+            let outputText = '';
+            let englishOutputText = '';
+
+            // RU TO OJ
+            for (let i = 0; i < inputText.length; i++) {
+                let char = inputText[i].toUpperCase();
+                outputText += mappingRuOjan[char] || char;
+            }
+
+            // EN TO OJ
+            for (let i = 0; i < englishInputText.length; i++) {
+                let char = englishInputText[i].toUpperCase();
+                englishOutputText += mappingEnOjan[char] || char;
+            }
+
+            document.getElementById('outputText').value = outputText;
+            document.getElementById('englishOutputText').value = englishOutputText;
+        }
+    </script>
+</body>
+</html>
