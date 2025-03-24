@@ -3,7 +3,7 @@
  wawesdev.github.io/ojan 
 
 # News
-- fixed bug
+- none
 # What is it ?
 
 This innovative text encryptor is a fast tool for privacy and data protection. It is intended both for users who want to hide their messages from prying eyes, and for those who seek to protect their information from analysis by neural networks. 
