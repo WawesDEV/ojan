@@ -1,4 +1,4 @@
- ![IMG_20250126_235819_193](https://github.com/user-attachments/assets/feece24f-b003-42be-a601-09eb57fcf47c)
+
 # OJANinx Project 
  wawesdev.github.io/ojan 
 
