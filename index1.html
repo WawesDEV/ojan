@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=5.0">
+    <title>OJANix v2.2</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #161b22, #161b22);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            background: rgba();
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 600px;
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            background: #0d1117;
+            color: white;
+            resize: none;
+            outline: none;
+        }
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #6f7070;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover {
+            background-color: #009b7d;
+        }
+        button i {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OJANix v2.2</h1>
+        <textarea id="inputText" placeholder="Text (RU, EN, Ojanix)..."></textarea>
+        <textarea id="outputText" placeholder="Ojanix translation..." readonly></textarea>
+        <div class="buttons">
+            <button onclick="encodeText()"><i class="fas fa-lock"></i> Ojanix (RUN)</button>
+            <button onclick="decodeTextRU()"><i class="fas fa-unlock"></i> unOjanix (RU)</button>
+            <button onclick="decodeTextEN()"><i class="fas fa-unlock"></i> unOjanix (EN)</button>
+        </div>
+    </div>
+
+    <script>
+        const ruMapping = {
+            'А': '1', 'Б': '2', 'В': '3', 'Г': '4', 'Д': '5', 'Е': '6', 'Ё': '7', 'Ж': '8', 'З': '9', 'И': '0',
+            'Й': '@', 'К': '#', 'Л': '$', 'М': '%', 'Н': '&', 'О': '*', 'П': '(', 'Р': ')', 'С': '-', 'Т': '+',
+            'У': '=', 'Ф': '{', 'Х': '}', 'Ц': '[', 'Ч': ']', 'Ш': '|', 'Щ': ':', 'Ы': ';', 'Э': '"', 'Ю': '\'',
+            'Я': '!'
+        };
+
+        const engMapping = {
+            'Q': '1', 'W': '²', 'E': '3', 'R': '4', 'T': '5', 'Y': '6', 'U': '7', 'I': '8', 'O': '9', 'P': '0',
+            'A': '@', 'S': '#', 'D': '$', 'F': '_', 'G': '&', 'H': '--', 'J': '+', 'K': '(', 'L': ')',
+            'Z': '*', 'X': '"', 'C': "'", 'V': ':', 'B': ';', 'N': '!', 'M': '?'
+        };
+
+        function encodeText() {
+            let inputText = document.getElementById('inputText').value.toUpperCase();
+            let outputText = '';
+
+            for (let char of inputText) {
+                if (ruMapping[char]) {
+                    outputText += ruMapping[char];
+                } else if (engMapping[char]) {
+                    outputText += engMapping[char];
+                } else {
+                    outputText += char;
+                }
+            }
+
+            document.getElementById('outputText').value = outputText;
+        }
+
+        function decodeTextRU() {
+            const reverseRuMapping = Object.fromEntries(Object.entries(ruMapping).map(([k, v]) => [v, k]));
+
+            let inputText = document.getElementById('inputText').value;
+            let outputText = '';
+
+            for (let char of inputText) {
+                outputText += reverseRuMapping[char] || char;
+            }
+
+            document.getElementById('outputText').value = outputText;
+        }
+
+        function decodeTextEN() {
+            const reverseEngMapping = Object.fromEntries(Object.entries(engMapping).map(([k, v]) => [v, k]));
+
+            let inputText = document.getElementById('inputText').value;
+            let outputText = '';
+            let skip = false;
+
+            for (let i = 0; i < inputText.length; i++) {
+                if (skip) {
+                    skip = false;
+                    continue;
+                }
+
+                let char = inputText[i];
+                let nextChar = inputText[i + 1] || '';
+
+                if (char === '-' && nextChar === '-') {
+                    outputText += 'H';
+                    skip = true;
+                } else {
+                    outputText += reverseEngMapping[char] || char;
+                }
+            }
+
+            document.getElementById('outputText').value = outputText;
+        }
+    </script>
+</body>
+</html>
