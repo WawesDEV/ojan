@@ -5,3 +5,14 @@ new upd 3.0.1
 
  wawesdev.github.io/ojan 
 
+```ojn
+<h1>OJANix Program</h1>
+<p>This is a test program</p>
+
+{=name=}John Doe
+{!print Hello {=name=!!}
+
+```
+
+
+:https://wawesdev.github.io/ojan/:
