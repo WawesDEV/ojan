@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJANix v3.0.2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00c896;
+            --primary-dark: #009b7d;
+            --secondary: #6f42c1;
+            --dark: #161b22;
+            --darker: #0d1117;
+            --light: #f0f6fc;
+            --gray: #6e7681;
+            --danger: #ff6b6b;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark), var(--darker));
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--light);
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(13, 17, 23, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            animation: fadeIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+        
+        .version {
+            font-size: 14px;
+            color: var(--gray);
+            margin-left: 5px;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            color: var(--primary);
+            transform: rotate(30deg);
+        }
+        
+        .text-areas {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .text-group {
+            position: relative;
+        }
+        
+        .text-label {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--darker);
+            padding: 0 8px;
+            font-size: 14px;
+            color: var(--gray);
+            border-radius: 4px;
+            z-index: 1;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--darker);
+            color: var(--light);
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 200, 150, 0.2);
+        }
+        
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        #outputText {
+            background: rgba(0, 200, 150, 0.05);
+            border-color: rgba(0, 200, 150, 0.2);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-grow: 1;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s;
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a32a8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(0, 200, 150, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .history-container {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+        
+        .history-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: var(--darker);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-time {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .clear-history {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .clear-history:hover {
+            color: var(--danger);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--darker);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .char-count {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Programming Mode Styles */
+        .mode-switcher {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .mode-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .mode-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .mode-content {
+            display: none;
+        }
+        
+        .mode-content.active {
+            display: block;
+        }
+        
+        #programmingMode {
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+        }
+        
+        #outputFrame {
+            width: 100%;
+            height: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: white;
+            margin-top: 15px;
+        }
+        
+        .run-btn {
+            background-color: var(--secondary);
+            color: white;
+            margin-top: 10px;
+        }
+        
+        .run-btn:hover {
+            background-color: #5a32a8;
+        }
+
+        /* Custom Translation Modal Styles */
+        .custom-translation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+        
+        .custom-translation-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .custom-translation-content {
+            background: var(--darker);
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+        
+        .custom-translation-title {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: var(--primary);
+            text-align: center;
+        }
+        
+        .custom-translation-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .custom-translation-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .custom-translation-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .custom-translation-panel {
+            display: none;
+        }
+        
+        .custom-translation-panel.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray);
+        }
+        
+        .form-select, .form-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--light);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .form-select:focus, .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 200, 150, 0.2);
+        }
+        
+        .code-preview {
+            background: var(--dark);
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin: 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .code-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .code-mappings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .mapping-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mapping-input {
+            flex: 1;
+            padding: 8px;
+            background: var(--dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: var(--light);
+        }
+        
+        .add-mapping {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 200, 150, 0.1);
+            color: var(--primary);
+            border: 1px dashed var(--primary);
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .add-mapping:hover {
+            background: rgba(0, 200, 150, 0.2);
+        }
+        
+        .remove-mapping {
+            color: var(--danger);
+            cursor: pointer;
+        }
+        
+        .custom-translation-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .saved-schemes {
+            margin-top: 20px;
+        }
+        
+        .scheme-item {
+            background: var(--dark);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .scheme-name {
+            font-weight: bold;
+        }
+        
+        .scheme-code {
+            font-family: monospace;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .scheme-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .file-actions {
+                flex-direction: column;
+            }
+
+            .code-mappings {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-code logo-icon"></i>
+                <h1>OJANix <span class="version">v3.0</span></h1>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        
+        <div class="mode-switcher">
+            <button class="mode-btn active" data-mode="translator">Translator</button>
+            <button class="mode-btn" data-mode="programming">OJANix Programming</button>
+        </div>
+        
+        <!-- Translator Mode -->
+        <div class="mode-content active" id="translatorMode">
+            <div class="text-areas">
+                <div class="text-group">
+                    <span class="text-label">Input Text (RU, EN, Ojanix)</span>
+                    <textarea id="inputText" placeholder="Enter text to translate..."></textarea>
+                    <div class="char-count" id="inputCount">0 characters</div>
+                </div>
+                
+                <div class="text-group">
+                    <span class="text-label">Output Text</span>
+                    <textarea id="outputText" placeholder="Translation will appear here..." readonly></textarea>
+                    <div class="char-count" id="outputCount">0 characters</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" onclick="encodeText()">
+                    <i class="fas fa-lock"></i> Encode to Ojanix
+                </button>
+                <button class="btn btn-secondary" onclick="decodeTextRU()">
+                    <i class="fas fa-unlock"></i> Decode to Russian
+                </button>
+                <button class="btn btn-secondary" onclick="decodeTextEN()">
+                    <i class="fas fa-unlock"></i> Decode to English
+                </button>
+                <button class="btn btn-outline" onclick="openCustomTranslationModal()">
+                    <i class="fas fa-cog"></i> Custom Translation
+                </button>
+            </div>
+            
+            <div class="file-actions">
+                <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-import"></i> Import Text File
+                </button>
+                <input type="file" id="fileInput" class="file-input" accept=".txt,.text">
+                
+                <button class="btn btn-outline" onclick="saveOutputAsFile()">
+                    <i class="fas fa-file-export"></i> Export Output
+                </button>
+                
+                <button class="btn btn-danger" onclick="clearAll()">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+                
+                <button class="btn btn-outline" onclick="copyToClipboard()">
+                    <i class="fas fa-copy"></i> Copy Output
+                </button>
+            </div>
+            
+            <div class="history-container">
+                <div class="history-title">
+                    <h3><i class="fas fa-history"></i> Translation History</h3>
+                    <button class="clear-history" onclick="clearHistory()">Clear History</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Programming Mode -->
+        <div class="mode-content" id="programmingModeContent">
+            <div class="text-group">
+                <span class="text-label">OJANix Code</span>
+                <textarea id="ojanixCode" placeholder="Write your OJANix code here..."></textarea>
+            </div>
+            
+            <button class="btn run-btn" onclick="runOjanixCode()">
+                <i class="fas fa-play"></i> Run Code
+            </button>
+            
+            <div class="text-group">
+                <span class="text-label">Output</span>
+                <iframe id="outputFrame" sandbox="allow-scripts"></iframe>
+            </div>
+            
+            <div class="file-actions">
+                <button class="btn btn-outline" onclick="document.getElementById('codeFileInput').click()">
+                    <i class="fas fa-file-import"></i> Import Code File
+                </button>
+                <input type="file" id="codeFileInput" class="file-input" accept=".ojx,.txt,.html">
+                
+                <button class="btn btn-outline" onclick="saveOjanixCode()">
+                    <i class="fas fa-file-export"></i> Export Code
+                </button>
+                
+                <button class="btn btn-danger" onclick="clearCode()">
+                    <i class="fas fa-trash"></i> Clear Code
+                </button>
+            </div>
+            
+            <div class="history-container">
+                <h3><i class="fas fa-info-circle"></i> OJANix Programming Guide</h3>
+                <div class="history-list">
+                    <div class="history-item">
+                        <div><strong>Basic Syntax:</strong> OJANix code is HTML with special encoded elements</div>
+                    </div>
+                    <div class="history-item">
+                        <div><strong>Variables:</strong> Use {=variable=} to declare and display variables</div>
+                    </div>
+                    <div class="history-item">
+                        <div><strong>Functions:</strong> {!funcName arg1 arg2!} to call functions</div>
+                    </div>
+                    <div class="history-item">
+                        <div><strong>Built-in Functions:</strong> print, alert, math operations</div>
+                    </div>
+                    <div class="history-item">
+                        <div><strong>Example:</strong> {=name=}1{!print Hello {=name=!!}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="watermark">OJANix v3.0 • Enhanced Edition</div>
+    </div>
+    
+    <!-- Custom Translation Modal -->
+    <div class="custom-translation-modal" id="customTranslationModal">
+        <div class="custom-translation-content">
+            <button class="close-modal" onclick="closeCustomTranslationModal()">&times;</button>
+            <h2 class="custom-translation-title">Custom Translation</h2>
+            
+            <div class="custom-translation-tabs">
+                <div class="custom-translation-tab active" data-tab="create">Create New</div>
+                <div class="custom-translation-tab" data-tab="load">Load Scheme</div>
+                <div class="custom-translation-tab" data-tab="saved">Saved Schemes</div>
+            </div>
+            
+            <div class="custom-translation-panel active" data-panel="create">
+                <div class="form-group">
+                    <label class="form-label">Language</label>
+                    <select class="form-select" id="customLanguage">
+                        <option value="ru">Russian</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Scheme Name</label>
+                    <input type="text" class="form-input" id="schemeName" placeholder="My Custom Translation">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Custom Code (leave empty to generate random)</label>
+                    <input type="text" class="form-input" id="customCodeInput" placeholder="e.g. XKCD123">
+                </div>
+                
+                <button class="btn btn-outline" onclick="generateRandomCode()">
+                    <i class="fas fa-random"></i> Generate Random Code
+                </button>
+                
+                <div class="form-group">
+                    <label class="form-label">Character Mappings</label>
+                    <div class="code-mappings" id="characterMappings">
+                        <!-- Mappings will be added here -->
+                    </div>
+                    <div class="add-mapping" onclick="addNewMapping()">
+                        <i class="fas fa-plus"></i> Add Mapping
+                    </div>
+                </div>
+                
+                <div class="code-actions">
+                    <button class="btn btn-primary" onclick="saveCustomScheme()">
+                        <i class="fas fa-save"></i> Save Scheme
+                    </button>
+                    <button class="btn btn-secondary" onclick="testCustomScheme()">
+                        <i class="fas fa-play"></i> Test Scheme
+                    </button>
+                </div>
+            </div>
+            
+            <div class="custom-translation-panel" data-panel="load">
+                <div class="form-group">
+                    <label class="form-label">Enter Custom Code</label>
+                    <input type="text" class="form-input" id="loadCodeInput" placeholder="Enter scheme code">
+                </div>
+                
+                <div class="code-preview" id="loadedSchemePreview">
+                    No scheme loaded. Enter a code and click "Load Scheme".
+                </div>
+                
+                <div class="custom-translation-actions">
+                    <button class="btn btn-outline" onclick="loadCustomScheme()">
+                        <i class="fas fa-search"></i> Load Scheme
+                    </button>
+                    <button class="btn btn-primary" onclick="useLoadedScheme()">
+                        <i class="fas fa-check"></i> Use This Scheme
+                    </button>
+                </div>
+            </div>
+            
+            <div class="custom-translation-panel" data-panel="saved">
+                <div class="saved-schemes" id="savedSchemesList">
+                    <!-- Saved schemes will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Character mappings
+        const ruMapping = {
+            'А': '1', 'Б': '2', 'В': '3', 'Г': '4', 'Д': '5', 'Е': '6', 'Ё': '7', 'Ж': '8', 'З': '9', 'И': '0',
+            'Й': '@', 'К': '#', 'Л': '$', 'М': '%', 'Н': '&', 'О': '*', 'П': '(', 'Р': ')', 'С': '-', 'Т': '+',
+            'У': '=', 'Ф': '{', 'Х': '}', 'Ц': '[', 'Ч': ']', 'Ш': '|', 'Щ': ':', 'Ы': ';', 'Э': '"', 'Ю': '\'',
+            'Я': '!',
+            'а': '1', 'б': '2', 'в': '3', 'г': '4', 'д': '5', 'е': '6', 'ё': '7', 'ж': '8', 'з': '9', 'и': '0',
+            'й': '@', 'к': '#', 'л': '$', 'м': '%', 'н': '&', 'о': '*', 'п': '(', 'р': ')', 'с': '-', 'т': '+',
+            'у': '=', 'ф': '{', 'х': '}', 'ц': '[', 'ч': ']', 'ш': '|', 'щ': ':', 'ы': ';', 'э': '"', 'ю': '\'',
+            'я': '!'
+        };
+
+        const engMapping = {
+            'Q': '1', 'W': '²', 'E': '3', 'R': '4', 'T': '5', 'Y': '6', 'U': '7', 'I': '8', 'O': '9', 'P': '0',
+            'A': '@', 'S': '#', 'D': '$', 'F': '_', 'G': '&', 'H': '--', 'J': '+', 'K': '(', 'L': ')',
+            'Z': '*', 'X': '"', 'C': "'", 'V': ':', 'B': ';', 'N': '!', 'M': '?',
+            'q': '1', 'w': '²', 'e': '3', 'r': '4', 't': '5', 'y': '6', 'u': '7', 'i': '8', 'o': '9', 'p': '0',
+            'a': '@', 's': '#', 'd': '$', 'f': '_', 'g': '&', 'h': '--', 'j': '+', 'k': '(', 'l': ')',
+            'z': '*', 'x': '"', 'c': "'", 'v': ':', 'b': ';', 'n': '!', 'm': '?'
+        };
+
+        // DOM elements
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const inputCount = document.getElementById('inputCount');
+        const outputCount = document.getElementById('outputCount');
+        const historyList = document.getElementById('historyList');
+        const toast = document.getElementById('toast');
+        const fileInput = document.getElementById('fileInput');
+        const themeToggle = document.getElementById('themeToggle');
+        const ojanixCode = document.getElementById('ojanixCode');
+        const outputFrame = document.getElementById('outputFrame');
+        const codeFileInput = document.getElementById('codeFileInput');
+        const modeButtons = document.querySelectorAll('.mode-btn');
+        const modeContents = document.querySelectorAll('.mode-content');
+
+        // Custom Translation elements
+        const customTranslationModal = document.getElementById('customTranslationModal');
+        const customLanguageSelect = document.getElementById('customLanguage');
+        const schemeNameInput = document.getElementById('schemeName');
+        const customCodeInput = document.getElementById('customCodeInput');
+        const characterMappings = document.getElementById('characterMappings');
+        const loadCodeInput = document.getElementById('loadCodeInput');
+        const loadedSchemePreview = document.getElementById('loadedSchemePreview');
+        const savedSchemesList = document.getElementById('savedSchemesList');
+
+        // Initialize
+        let translationsHistory = JSON.parse(localStorage.getItem('ojanixHistory')) || [];
+        let isDarkMode = localStorage.getItem('ojanixDarkMode') !== 'false';
+        let customSchemes = JSON.parse(localStorage.getItem('ojanixCustomSchemes')) || {};
+        let currentCustomScheme = null;
+        
+        // Set initial theme
+        updateTheme();
+        updateCharCounts();
+        renderHistory();
+
+        // Event listeners
+        inputText.addEventListener('input', updateCharCounts);
+        fileInput.addEventListener('change', handleFileSelect);
+        themeToggle.addEventListener('click', toggleTheme);
+        codeFileInput.addEventListener('change', handleCodeFileSelect);
+        
+        // Mode switching
+        modeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const mode = button.getAttribute('data-mode');
+                switchMode(mode);
+            });
+        });
+
+        // Custom Translation event listeners
+        customLanguageSelect.addEventListener('change', initCharacterMappings);
+
+        // Tab switching for custom translation
+        document.querySelectorAll('.custom-translation-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.custom-translation-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const panel = tab.getAttribute('data-tab');
+                document.querySelectorAll('.custom-translation-panel').forEach(p => {
+                    p.classList.remove('active');
+                });
+                document.querySelector(`.custom-translation-panel[data-panel="${panel}"]`).classList.add('active');
+            });
+        });
+
+        // Functions
+        function encodeText() {
+            // Check for custom scheme first
+            if (currentCustomScheme) {
+                encodeWithCustomScheme();
+                return;
+            }
+            
+            let text = inputText.value;
+            let result = '';
+            
+            for (let char of text) {
+                if (ruMapping[char]) {
+                    result += ruMapping[char];
+                } else if (engMapping[char]) {
+                    result += engMapping[char];
+                } else {
+                    result += char;
+                }
+            }
+            
+            outputText.value = result;
+            updateCharCounts();
+            addToHistory(text, result, 'encode');
+            showToast('Text encoded to Ojanix!');
+        }
+
+        function decodeTextRU() {
+            if (currentCustomScheme && currentCustomScheme.language === 'ru') {
+                decodeWithCustomScheme();
+                return;
+            }
+            
+            const reverseRuMapping = Object.fromEntries(
+                Object.entries(ruMapping).map(([k, v]) => [v, k.toLowerCase()])
+            );
+            
+            let text = inputText.value;
+            let result = '';
+            
+            for (let char of text) {
+                result += reverseRuMapping[char] || char;
+            }
+            
+            outputText.value = result;
+            updateCharCounts();
+            addToHistory(text, result, 'decode-ru');
+            showToast('Text decoded to Russian!');
+        }
+
+        function decodeTextEN() {
+            if (currentCustomScheme && currentCustomScheme.language === 'en') {
+                decodeWithCustomScheme();
+                return;
+            }
+            
+            const reverseEngMapping = Object.fromEntries(
+                Object.entries(engMapping).map(([k, v]) => [v, k.toLowerCase()])
+            );
+            
+            let text = inputText.value;
+            let result = '';
+            let skip = false;
+            
+            for (let i = 0; i < text.length; i++) {
+                if (skip) {
+                    skip = false;
+                    continue;
+                }
+                
+                let char = text[i];
+                let nextChar = text[i + 1] || '';
+                
+                if (char === '-' && nextChar === '-') {
+                    result += 'h';
+                    skip = true;
+                } else {
+                    result += reverseEngMapping[char] || char;
+                }
+            }
+            
+            outputText.value = result;
+            updateCharCounts();
+            addToHistory(text, result, 'decode-en');
+            showToast('Text decoded to English!');
+        }
+
+        function encodeWithCustomScheme() {
+            const text = inputText.value;
+            let result = '';
+            const mappings = currentCustomScheme.mappings;
+            
+            for (let char of text) {
+                result += mappings[char] || char;
+            }
+            
+            outputText.value = result;
+            updateCharCounts();
+            addToHistory(text, result, `custom-encode (${currentCustomScheme.name})`);
+            showToast(`Text encoded with "${currentCustomScheme.name}" scheme!`);
+        }
+        
+        function decodeWithCustomScheme() {
+            const text = inputText.value;
+            let result = '';
+            const mappings = currentCustomScheme.mappings;
+            
+            // Create reverse mapping
+            const reverseMappings = {};
+            for (const [char, symbol] of Object.entries(mappings)) {
+                reverseMappings[symbol] = char;
+            }
+            
+            for (let char of text) {
+                result += reverseMappings[char] || char;
+            }
+            
+            outputText.value = result;
+            updateCharCounts();
+            addToHistory(text, result, `custom-decode (${currentCustomScheme.name})`);
+            showToast(`Text decoded with "${currentCustomScheme.name}" scheme!`);
+        }
+
+        function updateCharCounts() {
+            inputCount.textContent = `${inputText.value.length} characters`;
+            outputCount.textContent = `${outputText.value.length} characters`;
+        }
+
+        function addToHistory(input, output, type) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const dateString = now.toLocaleDateString();
+            
+            const historyItem = {
+                input,
+                output,
+                type,
+                timestamp: `${dateString} ${timeString}`
+            };
+            
+            translationsHistory.unshift(historyItem);
+            if (translationsHistory.length > 10) {
+                translationsHistory.pop();
+            }
+            
+            localStorage.setItem('ojanixHistory', JSON.stringify(translationsHistory));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            historyList.innerHTML = '';
+            
+            if (translationsHistory.length === 0) {
+                historyList.innerHTML = '<div class="history-item" style="color: var(--gray);">No history yet</div>';
+                return;
+            }
+            
+            translationsHistory.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.title = `Type: ${item.type}\nTime: ${item.timestamp}`;
+                
+                let icon = '';
+                if (item.type.includes('encode')) {
+                    icon = '<i class="fas fa-lock" style="color: var(--primary);"></i>';
+                } else if (item.type.includes('decode')) {
+                    icon = '<i class="fas fa-unlock" style="color: var(--secondary);"></i>';
+                }
+                
+                historyItem.innerHTML = `
+                    <div>
+                        ${icon} ${item.input.substring(0, 30)}${item.input.length > 30 ? '...' : ''}
+                    </div>
+                    <div class="history-time">${item.timestamp}</div>
+                `;
+                
+                historyItem.addEventListener('click', () => {
+                    inputText.value = item.input;
+                    outputText.value = item.output;
+                    updateCharCounts();
+                    showToast('History item loaded!');
+                });
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        function clearHistory() {
+            translationsHistory = [];
+            localStorage.setItem('ojanixHistory', JSON.stringify(translationsHistory));
+            renderHistory();
+            showToast('History cleared!');
+        }
+
+        function clearAll() {
+            inputText.value = '';
+            outputText.value = '';
+            updateCharCounts();
+            showToast('Cleared all text!');
+        }
+
+        function copyToClipboard() {
+            if (!outputText.value) {
+                showToast('No output to copy!', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(outputText.value)
+                .then(() => showToast('Copied to clipboard!'))
+                .catch(() => showToast('Failed to copy!', 'error'));
+        }
+
+        function saveOutputAsFile() {
+            if (!outputText.value) {
+                showToast('No output to save!', 'error');
+                return;
+            }
+            
+            const blob = new Blob([outputText.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ojanix-translation-${new Date().toISOString().slice(0, 10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('File saved!');
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                inputText.value = e.target.result;
+                updateCharCounts();
+                showToast('File imported successfully!');
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('ojanixDarkMode', isDarkMode);
+            updateTheme();
+        }
+
+        function updateTheme() {
+            if (isDarkMode) {
+                document.documentElement.style.setProperty('--dark', '#161b22');
+                document.documentElement.style.setProperty('--darker', '#0d1117');
+                document.documentElement.style.setProperty('--light', '#f0f6fc');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                document.documentElement.style.setProperty('--dark', '#f0f2f5');
+                document.documentElement.style.setProperty('--darker', '#ffffff');
+                document.documentElement.style.setProperty('--light', '#24292e');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+        
+        function switchMode(mode) {
+            modeButtons.forEach(btn => btn.classList.remove('active'));
+            modeContents.forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+            document.getElementById(`${mode}ModeContent`).classList.add('active');
+            
+            showToast(`Switched to ${mode} mode`);
+        }
+        
+        function runOjanixCode() {
+            const code = ojanixCode.value;
+            if (!code.trim()) {
+                showToast('No code to run!', 'error');
+                return;
+            }
+            
+            try {
+                // Process OJANix code (simple example - in reality you'd need a proper parser)
+                let processedCode = code;
+                
+                // Simple variable substitution {=var=}
+                processedCode = processedCode.replace(/{=([a-zA-Z0-9_]+)=}/g, (match, varName) => {
+                    return `<span id="ojanix-var-${varName}"></span>`;
+                });
+                
+                // Simple function calls {!func args!}
+                processedCode = processedCode.replace(/{!([a-zA-Z0-9_]+)(.*?)!}/g, (match, funcName, args) => {
+                    args = args.trim();
+                    switch(funcName.toLowerCase()) {
+                        case 'print':
+                            return `<script>document.write(${args})<\/script>`;
+                        case 'alert':
+                            return `<script>alert(${args})<\/script>`;
+                        case 'math':
+                            return `<script>document.write(eval(${args}))<\/script>`;
+                        default:
+                            return `<!-- Unknown function: ${funcName} -->`;
+                    }
+                });
+                
+                // Create a complete HTML document
+                const htmlDoc = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>OJANix Program</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                        </style>
+                    </head>
+                    <body>
+                        ${processedCode}
+                        <script>
+                            // Variable assignment handler
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const varElements = document.querySelectorAll('[id^="ojanix-var-"]');
+                                varElements.forEach(el => {
+                                    const varName = el.id.replace('ojanix-var-', '');
+                                    el.textContent = window[varName] || '';
+                                });
+                            });
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+                
+                // Display in iframe
+                outputFrame.srcdoc = htmlDoc;
+                showToast('Code executed successfully!');
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+        
+        function saveOjanixCode() {
+            if (!ojanixCode.value) {
+                showToast('No code to save!', 'error');
+                return;
+            }
+            
+            const blob = new Blob([ojanixCode.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ojanix-program-${new Date().toISOString().slice(0, 10)}.ojx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Code saved!');
+        }
+        
+        function clearCode() {
+            ojanixCode.value = '';
+            outputFrame.srcdoc = '';
+            showToast('Code cleared!');
+        }
+        
+        function handleCodeFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                ojanixCode.value = e.target.result;
+                showToast('Code file imported successfully!');
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
+        // Custom Translation Functions
+        function openCustomTranslationModal() {
+            customTranslationModal.classList.add('active');
+            loadSavedSchemes();
+            initCharacterMappings();
+        }
+        
+        function closeCustomTranslationModal() {
+            customTranslationModal.classList.remove('active');
+        }
+        
+        function initCharacterMappings() {
+            const language = customLanguageSelect.value;
+            characterMappings.innerHTML = '';
+            
+            // Get default characters for selected language
+            let defaultChars = [];
+            if (language === 'ru') {
+                defaultChars = Object.keys(ruMapping);
+            } else {
+                defaultChars = Object.keys(engMapping);
+            }
+            
+            // Create mapping inputs for each character
+            defaultChars.forEach(char => {
+                addMappingRow(char, '');
+            });
+        }
+        
+        function addMappingRow(char = '', symbol = '') {
+            const mappingId = `mapping-${Date.now()}`;
+            
+            const mappingItem = document.createElement('div');
+            mappingItem.className = 'mapping-item';
+            mappingItem.innerHTML = `
+                <input type="text" class="mapping-input" value="${char}" placeholder="Character">
+                <span>→</span>
+                <input type="text" class="mapping-input" value="${symbol}" placeholder="Symbol">
+                <i class="fas fa-times remove-mapping" onclick="removeMapping('${mappingId}')"></i>
+            `;
+            mappingItem.id = mappingId;
+            
+            characterMappings.appendChild(mappingItem);
+        }
+        
+        function addNewMapping() {
+            addMappingRow('', '');
+        }
+        
+        function removeMapping(id) {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        }
+        
+        function generateRandomCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            customCodeInput.value = result;
+        }
+        
+        function saveCustomScheme() {
+            const language = customLanguageSelect.value;
+            const schemeName = schemeNameInput.value.trim();
+            let customCode = customCodeInput.value.trim();
+            
+            if (!schemeName) {
+                showToast('Please enter a scheme name', 'error');
+                return;
+            }
+            
+            // Generate random code if none provided
+            if (!customCode) {
+                generateRandomCode();
+                customCode = customCodeInput.value;
+            }
+            
+            // Collect all mappings
+            const mappings = {};
+            const mappingItems = document.querySelectorAll('.mapping-item');
+            
+            mappingItems.forEach(item => {
+                const inputs = item.querySelectorAll('.mapping-input');
+                const char = inputs[0].value;
+                const symbol = inputs[1].value;
+                
+                if (char && symbol) {
+                    mappings[char] = symbol;
+                }
+            });
+            
+            if (Object.keys(mappings).length === 0) {
+                showToast('Please add at least one character mapping', 'error');
+                return;
+            }
+            
+            // Create scheme object
+            const scheme = {
+                name: schemeName,
+                language: language,
+                code: customCode,
+                mappings: mappings,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Save to storage
+            customSchemes[customCode] = scheme;
+            localStorage.setItem('ojanixCustomSchemes', JSON.stringify(customSchemes));
+            
+            showToast(`Scheme "${schemeName}" saved with code: ${customCode}`);
+            loadSavedSchemes();
+        }
+        
+        function loadSavedSchemes() {
+            savedSchemesList.innerHTML = '';
+            
+            if (Object.keys(customSchemes).length === 0) {
+                savedSchemesList.innerHTML = '<div style="color: var(--gray); text-align: center;">No saved schemes yet</div>';
+                return;
+            }
+            
+            // Sort schemes by creation date (newest first)
+            const sortedSchemes = Object.values(customSchemes).sort((a, b) => {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+            
+            sortedSchemes.forEach(scheme => {
+                const schemeItem = document.createElement('div');
+                schemeItem.className = 'scheme-item';
+                schemeItem.innerHTML = `
+                    <div>
+                        <div class="scheme-name">${scheme.name}</div>
+                        <div class="scheme-code">Code: ${scheme.code}</div>
+                    </div>
+                    <div class="scheme-actions">
+                        <button class="btn btn-outline" onclick="useSavedScheme('${scheme.code}')">
+                            <i class="fas fa-play"></i> Use
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteScheme('${scheme.code}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                savedSchemesList.appendChild(schemeItem);
+            });
+        }
+        
+        function useSavedScheme(code) {
+            const scheme = customSchemes[code];
+            if (!scheme) {
+                showToast('Scheme not found', 'error');
+                return;
+            }
+            
+            currentCustomScheme = scheme;
+            closeCustomTranslationModal();
+            showToast(`Using custom scheme: ${scheme.name}`);
+        }
+        
+        function deleteScheme(code) {
+            if (confirm('Are you sure you want to delete this scheme?')) {
+                delete customSchemes[code];
+                localStorage.setItem('ojanixCustomSchemes', JSON.stringify(customSchemes));
+                loadSavedSchemes();
+                showToast('Scheme deleted');
+            }
+        }
+        
+        function loadCustomScheme() {
+            const code = loadCodeInput.value.trim();
+            if (!code) {
+                showToast('Please enter a scheme code', 'error');
+                return;
+            }
+            
+            const scheme = customSchemes[code];
+            if (!scheme) {
+                loadedSchemePreview.textContent = 'Scheme not found';
+                return;
+            }
+            
+            let preview = `Name: ${scheme.name}\n`;
+            preview += `Language: ${scheme.language === 'ru' ? 'Russian' : 'English'}\n`;
+            preview += `Created: ${new Date(scheme.createdAt).toLocaleString()}\n\n`;
+            preview += 'Character Mappings:\n';
+            
+            for (const [char, symbol] of Object.entries(scheme.mappings)) {
+                preview += `${char} → ${symbol}\n`;
+            }
+            
+            loadedSchemePreview.textContent = preview;
+        }
+        
+        function useLoadedScheme() {
+            const code = loadCodeInput.value.trim();
+            if (!code) {
+                showToast('Please enter a scheme code', 'error');
+                return;
+            }
+            
+            const scheme = customSchemes[code];
+            if (!scheme) {
+                showToast('Scheme not found', 'error');
+                return;
+            }
+            
+            currentCustomScheme = scheme;
+            closeCustomTranslationModal();
+            showToast(`Using custom scheme: ${scheme.name}`);
+        }
+        
+        function testCustomScheme() {
+            const language = customLanguageSelect.value;
+            const mappings = {};
+            
+            // Collect all mappings
+            const mappingItems = document.querySelectorAll('.mapping-item');
+            mappingItems.forEach(item => {
+                const inputs = item.querySelectorAll('.mapping-input');
+                const char = inputs[0].value;
+                const symbol = inputs[1].value;
+                
+                if (char && symbol) {
+                    mappings[char] = symbol;
+                }
+            });
+            
+            if (Object.keys(mappings).length === 0) {
+                showToast('Please add at least one character mapping', 'error');
+                return;
+            }
+            
+            // Test with sample text
+            let sampleText = '';
+            if (language === 'ru') {
+                sampleText = 'Привет мир! Это тестовая строка.';
+            } else {
+                sampleText = 'Hello world! This is a test string.';
+            }
+            
+            let result = '';
+            for (const char of sampleText) {
+                result += mappings[char] || char;
+            }
+            
+            showToast(`Test translation:\nOriginal: ${sampleText}\nTranslated: ${result}`);
+        }
+    </script>
+</body>
+</html>
