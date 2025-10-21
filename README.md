@@ -1,13 +1,14 @@
 
-new upd 3.0.2
-![image](https://github.com/user-attachments/assets/a5074022-84e0-4ef0-804c-00f61f27738c)
+new upd 3.0.2.1
+<img width="858" height="981" alt="image" src="https://github.com/user-attachments/assets/dbb68215-0b65-4e86-bc12-b5f0bbb34dfb" />
+
 
 
 
  wawesdev.github.io/ojan 
 
 ```ojn
-added Custom Translation 
+Share code and  Encryption Difficulty  
 
 ```
 
