@@ -8,8 +8,8 @@ new upd 3.0.2.1
  wawesdev.github.io/ojan 
 
 ```ojn
-Share code and  Encryption Difficulty  
-
+the code is completely open source and written in html and css in one code
+what's new? was added Share code and encryption methods by complexity
 ```
 
 
