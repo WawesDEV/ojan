@@ -1,19 +1,25 @@
-
-new upd 3.0.1.2 -- lol I mixed up the numbers and it turned out to be a non-existent version.
-<img width="858" height="981" alt="image" src="https://github.com/user-attachments/assets/dbb68215-0b65-4e86-bc12-b5f0bbb34dfb" />
-
+NEW BETA UPDATE "OJANix Pro v4.0 - Ultimate Encryption Suite"
+<img width="1433" height="1041" alt="image" src="https://github.com/user-attachments/assets/869e4fb0-5078-412f-ad25-db622a0b5c70" />
 
 
+What's new in this update and what you should pay attention to 
 
- wawesdev.github.io/ojan 
+1. A completely new website design has been added
+2. Added beta macro functionality.
+3. More details about the new features can be found on the website
+4. Added statistics and saved your past history from OJANIX 3.0.1.2 so you don't have to worry about anything.
+
+
+
+
+
 
 ```ojn
 the code is completely open source and written in html and css in one code
-what's new? was added Share code and encryption methods by complexity
 ```
 
 
-:https://wawesdev.github.io/ojan/:
+
 
 normal encryption occurs using this method ⬇️
 
