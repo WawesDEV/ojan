@@ -15,7 +15,7 @@ What's new in this update and what you should pay attention to
 
 
 ```ojn
-the code is completely open source and written in html and css in one code
+the code is completely open source and written in html and css and Javascript in one code
 ```
 
 
