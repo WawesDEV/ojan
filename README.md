@@ -1,5 +1,6 @@
-NEW BETA UPDATE "OJANix Pro v4.0 - Ultimate Encryption Suite"
-<img width="1433" height="1041" alt="image" src="https://github.com/user-attachments/assets/869e4fb0-5078-412f-ad25-db622a0b5c70" />
+NEW BETA UPDATE "OJANix Pro v4.0.1| Cyber-suite"
+<img width="2559" height="1174" alt="image" src="https://github.com/user-attachments/assets/d8c0d9ba-15d9-4722-8b68-b50c0f8942c2" />
+
 
 
 What's new in this update and what you should pay attention to 
@@ -8,9 +9,10 @@ What's new in this update and what you should pay attention to
 2. Added beta macro functionality.
 3. More details about the new features can be found on the website
 4. Added statistics and saved your past history from OJANIX 3.0.1.2 so you don't have to worry about anything.
-
-
-
+5. Terminal
+6. Reset system
+7. Steganography
+8. On/Off sound 🔊 
 
 
 
