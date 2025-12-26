@@ -8,7 +8,7 @@ What's new in this update and what you should pay attention to
 1. A completely new website design has been added
 2. Added beta macro functionality.
 3. More details about the new features can be found on the website
-4. Added statistics and saved your past history from OJANIX 3.0.1.2 so you don't have to worry about anything.
+4. When you upgrade to this version, your past data is not retained from previous versions!
 5. Terminal
 6. Reset system
 7. Steganography
