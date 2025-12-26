@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJANix OS v4.0 | Cyber-Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CORE VARIABLES & RESET --- */
+        :root {
+            --primary: #00ffaa;
+            --primary-dim: #00ffaa40;
+            --secondary: #bd00ff;
+            --secondary-dim: #bd00ff40;
+            --bg-dark: #050505;
+            --bg-panel: rgba(15, 20, 25, 0.75);
+            --text-main: #e0e6ed;
+            --text-muted: #8b949e;
+            --border: 1px solid rgba(255, 255, 255, 0.08);
+            --glass: blur(20px);
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            --font-ui: 'Segoe UI', system-ui, sans-serif;
+            --shadow-glow: 0 0 15px var(--primary-dim);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: var(--primary) var(--bg-dark); }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* --- BACKGROUND FX --- */
+        #matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+        }
+
+        /* --- LAYOUT --- */
+        .sidebar {
+            width: 80px;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            border-right: var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar:hover { width: 240px; }
+        
+        .brand {
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            padding-left: 26px;
+            width: 100%;
+        }
+
+        .nav-item {
+            width: 100%;
+            padding: 15px 0 15px 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary);
+            background: linear-gradient(90deg, var(--primary-dim) 0%, transparent 100%);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-item i { font-size: 20px; width: 24px; text-align: center; }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* --- SECTIONS --- */
+        .section {
+            display: none;
+            animation: slideUp 0.4s ease-out;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-panel);
+            border: var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            backdrop-filter: var(--glass);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        h2 { margin-bottom: 20px; font-weight: 300; letter-spacing: 1px; color: var(--primary); border-bottom: 1px solid var(--primary-dim); padding-bottom: 10px; }
+        h3 { margin: 15px 0; font-size: 16px; color: var(--text-muted); }
+
+        /* --- FORM ELEMENTS --- */
+        .input-group { position: relative; margin-bottom: 20px; }
+        
+        textarea, input[type="text"], input[type="number"], select {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #333;
+            color: var(--text-main);
+            padding: 15px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        textarea:focus, input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px var(--primary-dim);
+        }
+
+        .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-dim); }
+        .btn-primary:hover { background: #fff; transform: translateY(-2px); }
+        
+        .btn-secondary { background: transparent; border: 1px solid var(--secondary); color: var(--secondary); }
+        .btn-secondary:hover { background: var(--secondary); color: #fff; }
+
+        .btn-danger { background: transparent; border: 1px solid #ff4444; color: #ff4444; }
+        .btn-danger:hover { background: #ff4444; color: #fff; }
+
+        /* --- TERMINAL --- */
+        #terminal-output {
+            height: 400px;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            padding: 15px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: #ccc;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            border-radius: 6px;
+        }
+        .term-line { margin-bottom: 5px; }
+        .term-success { color: var(--primary); }
+        .term-error { color: #ff4444; }
+        .term-info { color: #44aaff; }
+        .term-cmd { color: #fff; font-weight: bold; }
+        .prompt { color: var(--primary); margin-right: 10px; }
+
+        /* --- STEGANOGRAPHY --- */
+        .stego-preview {
+            max-width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border: 1px dashed #444;
+            margin: 10px 0;
+            display: none;
+        }
+
+        /* --- TOAST & UTILS --- */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .toast {
+            background: rgba(10, 15, 20, 0.95);
+            border-left: 4px solid var(--primary);
+            color: #fff;
+            padding: 15px 25px;
+            margin-top: 10px;
+            border-radius: 4px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+        }
+        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        .badge {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: auto;
+        }
+
+        /* --- STATS GRID --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-val { font-size: 28px; font-weight: 700; color: var(--primary); font-family: var(--font-mono); }
+        .stat-label { font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="sidebar">
+        <div class="brand">
+            <i class="fas fa-biohazard"></i>
+            <span>OJANix OS</span>
+        </div>
+        
+        <div class="nav-item active" onclick="nav('dashboard')">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="nav('translator')">
+            <i class="fas fa-language"></i>
+            <span>Translator++</span>
+        </div>
+        <div class="nav-item" onclick="nav('crypto')">
+            <i class="fas fa-key"></i>
+            <span>AES Crypto</span>
+            <span class="badge">NEW</span>
+        </div>
+        <div class="nav-item" onclick="nav('stego')">
+            <i class="fas fa-image"></i>
+            <span>Steganography</span>
+            <span class="badge">PRO</span>
+        </div>
+        <div class="nav-item" onclick="nav('terminal')">
+            <i class="fas fa-terminal"></i>
+            <span>DevTerminal</span>
+        </div>
+        <div class="nav-item" onclick="nav('tools')">
+            <i class="fas fa-toolbox"></i>
+            <span>Toolbox</span>
+        </div>
+        
+        <div style="margin-top: auto; width: 100%;">
+            <div class="nav-item" onclick="toggleSound()">
+                <i class="fas fa-volume-up" id="soundIcon"></i>
+                <span>Sound: ON</span>
+            </div>
+            <div class="nav-item" style="color: #ff4444;" onclick="resetSystem()">
+                <i class="fas fa-power-off"></i>
+                <span>Reset System</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        
+        <div id="dashboard" class="section active">
+            <h2>System Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-val" id="stat-enc">0</div>
+                    <div class="stat-label">Ops Performed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" id="stat-time">00:00</div>
+                    <div class="stat-label">System Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val">v4.0.1</div>
+                    <div class="stat-label">Kernel Version</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" style="color: var(--secondary);">SECURE</div>
+                    <div class="stat-label">Status</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-bell"></i> System Log</h3>
+                <div id="activity-log" style="height: 150px; overflow-y: auto; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+                    <div>[SYSTEM] OJANix OS initialized successfully.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="translator" class="section">
+            <h2><i class="fas fa-random"></i> OJANix Cipher (Classic)</h2>
+            <div class="card">
+                <div class="btn-row" style="margin-bottom: 15px;">
+                    <button class="btn-secondary" onclick="setDiff('basic')" id="btn-diff-basic">Basic</button>
+                    <button class="btn-secondary" onclick="setDiff('advanced')" id="btn-diff-advanced">Adv</button>
+                    <button class="btn-secondary" onclick="setDiff('expert')" id="btn-diff-expert">Expert</button>
+                </div>
+                
+                <div class="input-group">
+                    <h3>Input</h3>
+                    <textarea id="transInput" placeholder="Enter text to translate/encode..."></textarea>
+                </div>
+                
+                <div class="btn-row">
+                    <button class="btn-primary" onclick="ojanixProcess('encode')"><i class="fas fa-lock"></i> Encode</button>
+                    <button class="btn-primary" onclick="ojanixProcess('decode')"><i class="fas fa-unlock"></i> Decode</button>
+                    <button class="btn-secondary" onclick="copyToClip('transOutput')"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+
+                <div class="input-group">
+                    <h3>Output</h3>
+                    <textarea id="transOutput" readonly style="color: var(--primary); border-color: var(--primary-dim);"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="crypto" class="section">
+            <h2><i class="fas fa-shield-halved"></i> Military Grade AES-GCM</h2>
+            <div class="card">
+                <p style="color: var(--text-muted); margin-bottom: 15px;">Uses the browser's native Web Crypto API for secure encryption.</p>
+                
+                <div class="input-group">
+                    <h3>Secret Message</h3>
+                    <textarea id="aesInput" placeholder="Top secret data..."></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <h3>Encryption Key (Password)</h3>
+                    <input type="text" id="aesKey" placeholder="Enter a strong password">
+                </div>
+                
+                <div class="btn-row">
+                    <button class="btn-primary" onclick="aesEncrypt()"><i class="fas fa-file-contract"></i> Encrypt AES</button>
+                    <button class="btn-secondary" style="border-color: var(--secondary); color: var(--secondary);" onclick="aesDecrypt()"><i class="fas fa-file-signature"></i> Decrypt AES</button>
+                </div>
+
+                <div class="input-group">
+                    <h3>Ciphertext (Base64)</h3>
+                    <textarea id="aesOutput" readonly style="font-family: var(--font-mono); color: #ffeb3b;"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="stego" class="section">
+            <h2><i class="fas fa-eye-slash"></i> Digital Steganography</h2>
+            <div class="card">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h3>1. Upload Image</h3>
+                        <input type="file" id="stegoUpload" accept="image/*" onchange="handleStegoImage(this)">
+                        <img id="stegoPreview" class="stego-preview">
+                    </div>
+                    <div>
+                        <h3>2. Message</h3>
+                        <textarea id="stegoText" placeholder="Message to hide inside the pixels..." style="height: 100px;"></textarea>
+                    </div>
+                </div>
+                
+                <div class="btn-row">
+                    <button class="btn-primary" onclick="hideTextInImage()">Hide Data</button>
+                    <button class="btn-secondary" onclick="revealTextFromImage()">Reveal Data</button>
+                    <a id="stegoDownload" style="display: none;" download="secret_image.png">Download Result</a>
+                </div>
+
+                <div class="input-group">
+                    <h3>Result Log</h3>
+                    <textarea id="stegoResult" readonly placeholder="Extraction results will appear here..."></textarea>
+                </div>
+                <canvas id="stegoCanvas" style="display:none;"></canvas>
+            </div>
+        </div>
+
+        <div id="terminal" class="section">
+            <h2><i class="fas fa-code"></i> Developer Terminal</h2>
+            <div class="card" style="background: #000;">
+                <div id="terminal-output">
+                    <div class="term-line term-info">OJANix OS Kernel v4.0.1 loaded.</div>
+                    <div class="term-line">Type <span class="term-cmd">help</span> for available commands.</div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <span class="prompt">root@ojanix:~#</span>
+                    <input type="text" id="termInput" style="background: transparent; border: none; padding: 10px 0;" autofocus onkeydown="handleTerm(event)">
+                </div>
+            </div>
+            <div class="card">
+                <h3>Quick Scripts</h3>
+                <div class="btn-row">
+                    <button class="btn-secondary" onclick="runCmd('system info')">SysInfo</button>
+                    <button class="btn-secondary" onclick="runCmd('matrix start')">Matrix On</button>
+                    <button class="btn-secondary" onclick="runCmd('clear')">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tools" class="section">
+            <h2><i class="fas fa-tools"></i> Utilities</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                
+                <div class="card">
+                    <h3>Password Generator</h3>
+                    <div class="input-group">
+                        <input type="text" id="passGenOut" readonly>
+                    </div>
+                    <input type="range" id="passLen" min="8" max="64" value="16" oninput="updatePassLen(this.value)">
+                    <span id="passLenLabel">16 chars</span>
+                    <div class="btn-row">
+                        <button class="btn-primary" onclick="generatePass()">Generate</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>SHA-256 Hasher</h3>
+                    <input type="text" id="hashInput" placeholder="String to hash" oninput="calcHash()">
+                    <div style="margin-top: 10px; font-family: var(--font-mono); word-break: break-all; color: var(--secondary);" id="hashOutput"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Text Analysis</h3>
+                    <textarea id="analyzeInput" placeholder="Paste text..." oninput="analyzeText()"></textarea>
+                    <div id="analysisResult" style="margin-top: 10px; font-size: 13px; color: var(--text-muted);">
+                        Words: 0 | Chars: 0
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="toast-container" id="toastArea"></div>
+
+    <script>
+        /* --- SYSTEM CORE --- */
+        const System = {
+            version: '4.0.1',
+            soundEnabled: true,
+            opCount: 0,
+            
+            init() {
+                this.updateTime();
+                setInterval(() => this.updateTime(), 1000);
+                MatrixBg.init();
+                SoundFX.init();
+                this.loadStats();
+            },
+
+            log(msg) {
+                const log = document.getElementById('activity-log');
+                const div = document.createElement('div');
+                div.innerHTML = `<span style="color: var(--primary)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+                log.prepend(div);
+            },
+
+            trackOp() {
+                this.opCount++;
+                document.getElementById('stat-enc').innerText = this.opCount;
+            },
+            
+            updateTime() {
+                document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
+            },
+
+            loadStats() {
+                // Mock loading stats
+            },
+
+            toast(msg, type='info') {
+                const area = document.getElementById('toastArea');
+                const el = document.createElement('div');
+                el.className = 'toast';
+                const icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
+                const color = type === 'error' ? '#ff4444' : 'var(--primary)';
+                el.style.borderLeftColor = color;
+                el.innerHTML = `<i class="fas ${icon}" style="color:${color}"></i> ${msg}`;
+                area.appendChild(el);
+                SoundFX.play(type === 'error' ? 'error' : 'blip');
+                setTimeout(() => el.remove(), 3000);
+            }
+        };
+
+        /* --- SOUND ENGINE --- */
+        const SoundFX = {
+            ctx: null,
+            init() {
+                window.addEventListener('click', () => {
+                    if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }, {once:true});
+            },
+            play(type) {
+                if (!System.soundEnabled || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                const now = this.ctx.currentTime;
+                
+                if (type === 'blip') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                }
+            }
+        };
+
+        /* --- MATRIX BACKGROUND --- */
+        const MatrixBg = {
+            init() {
+                const c = document.getElementById('matrixCanvas');
+                const ctx = c.getContext('2d');
+                c.width = window.innerWidth;
+                c.height = window.innerHeight;
+                
+                const chars = "OJANIX0123456789ABCDEF";
+                const fontSize = 14;
+                const columns = c.width / fontSize;
+                const drops = Array(Math.floor(columns)).fill(1);
+
+                function draw() {
+                    ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+                    ctx.fillRect(0, 0, c.width, c.height);
+                    ctx.fillStyle = '#00ffaa';
+                    ctx.font = fontSize + 'px monospace';
+
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                        if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+                        drops[i]++;
+                    }
+                }
+                setInterval(draw, 33);
+                
+                window.addEventListener('resize', () => {
+                    c.width = window.innerWidth;
+                    c.height = window.innerHeight;
+                });
+            }
+        };
+
+        /* --- NAVIGATION --- */
+        function nav(id) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            // Highlight nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            if(id === 'dashboard') navItems[1].classList.add('active');
+            if(id === 'translator') navItems[2].classList.add('active');
+            if(id === 'crypto') navItems[3].classList.add('active');
+            if(id === 'stego') navItems[4].classList.add('active');
+            if(id === 'terminal') navItems[5].classList.add('active');
+            if(id === 'tools') navItems[6].classList.add('active');
+
+            SoundFX.play('blip');
+        }
+
+        /* --- 1. OJANIX TRANSLATOR LOGIC --- */
+        let currentDiff = 'basic';
+        const map = {
+            ru: {'А':'1','Б':'2','В':'3','Г':'4','Д':'5','Е':'6','Ё':'7','Ж':'8','З':'9','И':'0','Й':'@','К':'#','Л':'$','М':'%','Н':'&','О':'*','П':'(','Р':')','С':'-','Т':'+','У':'=','Ф':'{','Х':'}','Ц':'[','Ч':']','Ш':'|','Щ':':','Ы':';','Э':'"','Ю':'\'','Я':'!'},
+            en: {'Q':'1','W':'²','E':'3','R':'4','T':'5','Y':'6','U':'7','I':'8','O':'9','P':'0','A':'@','S':'#','D':'$','F':'_','G':'&','H':'--','J':'+','K':'(','L':')','Z':'*','X':'"','C':"'",'V':':','B':';','N':'!','M':'?'}
+        };
+
+        function setDiff(level) {
+            currentDiff = level;
+            document.querySelectorAll('#translator .btn-secondary').forEach(b => b.classList.remove('btn-primary'));
+            // Visual toggle (simplified)
+            System.toast(`Difficulty set to: ${level.toUpperCase()}`);
+        }
+
+        function ojanixProcess(mode) {
+            const input = document.getElementById('transInput').value;
+            let output = '';
+            
+            if (mode === 'encode') {
+                let temp = input;
+                // Basic Substitution
+                temp = temp.split('').map(c => {
+                    const up = c.toUpperCase();
+                    if(map.ru[up]) return map.ru[up];
+                    if(map.en[up]) return map.en[up];
+                    return c;
+                }).join('');
+
+                if (currentDiff === 'advanced' || currentDiff === 'expert') {
+                    temp = temp.split('').reverse().join('');
+                }
+                if (currentDiff === 'expert') {
+                    temp = btoa(temp); // Base64 wrapper
+                }
+                output = temp;
+            } else {
+                // Decode Logic (Simplified reverse for demo)
+                let temp = input;
+                if (currentDiff === 'expert') {
+                    try { temp = atob(temp); } catch(e) { System.toast('Base64 Error', 'error'); return; }
+                }
+                if (currentDiff === 'advanced' || currentDiff === 'expert') {
+                    temp = temp.split('').reverse().join('');
+                }
+                
+                // Reverse Map
+                const revRu = Object.entries(map.ru).reduce((acc, [k,v]) => ({...acc, [v]: k}), {});
+                const revEn = Object.entries(map.en).reduce((acc, [k,v]) => ({...acc, [v]: k}), {});
+                
+                output = temp.split('').map(c => revRu[c] || revEn[c] || c).join('');
+            }
+            
+            document.getElementById('transOutput').value = output;
+            System.trackOp();
+            System.log(`${mode.toUpperCase()} performed [${currentDiff}]`);
+        }
+
+        /* --- 2. AES CRYPTO LOGIC --- */
+        async function aesEncrypt() {
+            const text = document.getElementById('aesInput').value;
+            const password = document.getElementById('aesKey').value;
+            if(!text || !password) return System.toast('Input and Key required!', 'error');
+
+            try {
+                const pt = new TextEncoder().encode(text);
+                const pw = new TextEncoder().encode(password);
+                const salt = crypto.getRandomValues(new Uint8Array(16));
+                
+                const keyMaterial = await crypto.subtle.importKey("raw", pw, "PBKDF2", false, ["deriveKey"]);
+                const key = await crypto.subtle.deriveKey(
+                    { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                    keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt"]
+                );
+                
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, pt);
+                
+                // Pack: salt + iv + ct
+                const packed = new Uint8Array(salt.byteLength + iv.byteLength + ct.byteLength);
+                packed.set(salt, 0);
+                packed.set(iv, salt.byteLength);
+                packed.set(new Uint8Array(ct), salt.byteLength + iv.byteLength);
+                
+                const result = btoa(String.fromCharCode(...packed));
+                document.getElementById('aesOutput').value = result;
+                System.toast('AES Encryption Successful');
+                System.trackOp();
+            } catch(e) { System.toast('Encryption Failed', 'error'); console.error(e); }
+        }
+
+        async function aesDecrypt() {
+            const raw = document.getElementById('aesInput').value; // In a real UX, usually separate input, but reuse for demo
+            const password = document.getElementById('aesKey').value;
+            if(!raw || !password) return System.toast('Ciphertext and Key required!', 'error');
+
+            try {
+                const packed = Uint8Array.from(atob(raw), c => c.charCodeAt(0));
+                const salt = packed.slice(0, 16);
+                const iv = packed.slice(16, 28);
+                const data = packed.slice(28);
+
+                const pw = new TextEncoder().encode(password);
+                const keyMaterial = await crypto.subtle.importKey("raw", pw, "PBKDF2", false, ["deriveKey"]);
+                const key = await crypto.subtle.deriveKey(
+                    { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                    keyMaterial, { name: "AES-GCM", length: 256 }, false, ["decrypt"]
+                );
+
+                const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
+                document.getElementById('aesOutput').value = new TextDecoder().decode(decrypted);
+                System.toast('AES Decryption Successful');
+            } catch(e) { System.toast('Decryption Failed (Wrong Key?)', 'error'); }
+        }
+
+        /* --- 3. STEGANOGRAPHY LOGIC --- */
+        function handleStegoImage(input) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('stegoPreview');
+                img.src = e.target.result;
+                img.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        function hideTextInImage() {
+            const img = document.getElementById('stegoPreview');
+            const text = document.getElementById('stegoText').value;
+            if (!img.src || !text) return System.toast('Image and Text required', 'error');
+
+            const canvas = document.getElementById('stegoCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            ctx.drawImage(img, 0, 0);
+
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+            
+            // Encode length then text (Simple LSB)
+            const binaryText = text.split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join('') + '00000000'; // Null terminator
+            
+            if (binaryText.length > data.length / 4) return System.toast('Text too long for this image', 'error');
+
+            for (let i = 0; i < binaryText.length; i++) {
+                // Modify the Red channel (index i*4) last bit
+                data[i * 4] = (data[i * 4] & 254) | parseInt(binaryText[i]);
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+            document.getElementById('stegoResult').value = "Data hidden successfully inside pixel structure.";
+            
+            const link = document.getElementById('stegoDownload');
+            link.href = canvas.toDataURL();
+            link.style.display = 'inline-block';
+            link.innerText = "Download Stego-Image";
+            System.toast('Steganography process complete');
+            System.trackOp();
+        }
+
+        function revealTextFromImage() {
+            const img = document.getElementById('stegoPreview');
+            if (!img.src) return System.toast('Upload image first', 'error');
+
+            const canvas = document.getElementById('stegoCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            ctx.drawImage(img, 0, 0);
+
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            let binary = '';
+            let output = '';
+
+            for (let i = 0; i < data.length; i += 4) {
+                binary += (data[i] & 1).toString();
+                if (binary.length === 8) {
+                    const charCode = parseInt(binary, 2);
+                    if (charCode === 0) break; // Null terminator
+                    output += String.fromCharCode(charCode);
+                    binary = '';
+                }
+            }
+            document.getElementById('stegoResult').value = output;
+            System.toast('Hidden data extracted');
+        }
+
+        /* --- 4. TERMINAL LOGIC --- */
+        function handleTerm(e) {
+            if(e.key === 'Enter') {
+                const input = e.target.value.trim();
+                runCmd(input);
+                e.target.value = '';
+            }
+        }
+
+        function runCmd(cmd) {
+            const term = document.getElementById('terminal-output');
+            const line = document.createElement('div');
+            line.className = 'term-line';
+            line.innerHTML = `<span class="prompt">root@ojanix:~#</span> ${cmd}`;
+            term.appendChild(line);
+
+            const args = cmd.split(' ');
+            const command = args[0].toLowerCase();
+
+            let response = '';
+            let style = 'term-info';
+
+            switch(command) {
+                case 'help':
+                    response = 'Available commands: clear, echo, encrypt, date, system, matrix';
+                    break;
+                case 'clear':
+                    term.innerHTML = '';
+                    return;
+                case 'date':
+                    response = new Date().toString();
+                    break;
+                case 'system':
+                    response = `OJANix Core: ${System.version}<br>Memory: ${(performance.memory ? performance.memory.usedJSHeapSize/1024/1024 : 0).toFixed(2)} MB<br>Ops: ${System.opCount}`;
+                    break;
+                case 'matrix':
+                    if (args[1] === 'start') { MatrixBg.init(); response = 'Matrix re-initialized.'; }
+                    else response = 'Usage: matrix start';
+                    break;
+                case 'echo':
+                    response = args.slice(1).join(' ');
+                    break;
+                case 'encrypt':
+                     response = "Use the GUI for complex encryption operations.";
+                     break;
+                default:
+                    response = `Command not found: ${command}`;
+                    style = 'term-error';
+            }
+
+            if(response) {
+                const resLine = document.createElement('div');
+                resLine.className = `term-line ${style}`;
+                resLine.innerHTML = response;
+                term.appendChild(resLine);
+            }
+            
+            term.scrollTop = term.scrollHeight;
+        }
+
+        /* --- 5. TOOLBOX LOGIC --- */
+        function generatePass() {
+            const len = document.getElementById('passLen').value;
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+            let pass = "";
+            for(let i=0; i<len; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            document.getElementById('passGenOut').value = pass;
+        }
+
+        function updatePassLen(val) {
+            document.getElementById('passLenLabel').textContent = val + ' chars';
+        }
+
+        async function calcHash() {
+            const text = document.getElementById('hashInput').value;
+            if(!text) { document.getElementById('hashOutput').innerText = ''; return; }
+            const msgBuffer = new TextEncoder().encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            document.getElementById('hashOutput').innerText = hashHex;
+        }
+
+        function analyzeText() {
+            const text = document.getElementById('analyzeInput').value;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const chars = text.length;
+            document.getElementById('analysisResult').innerText = `Words: ${words} | Chars: ${chars} | Lines: ${text.split('\n').length}`;
+        }
+
+        function copyToClip(id) {
+            const el = document.getElementById(id);
+            el.select();
+            document.execCommand('copy');
+            System.toast('Copied to clipboard');
+        }
+
+        function toggleSound() {
+            System.soundEnabled = !System.soundEnabled;
+            document.getElementById('soundIcon').className = System.soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+            System.toast(`Sound ${System.soundEnabled ? 'ON' : 'OFF'}`);
+        }
+        
+        function resetSystem() {
+            if(confirm("Factory Reset OJANix?")) location.reload();
+        }
+
+        // Initialize System
+        window.onload = () => System.init();
+
+    </script>
+</body>
+</html>
